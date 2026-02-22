@@ -5,7 +5,7 @@ import threading
 
 def test_build_status_dict_structure():
     """BUILD_STATUS entries have expected keys."""
-    from panoconfig360_backend.api.server import BUILD_STATUS, BUILD_STATUS_LOCK
+    from api.server import BUILD_STATUS, BUILD_STATUS_LOCK
 
     build_id = "ab0000000000"
     with BUILD_STATUS_LOCK:
@@ -24,7 +24,7 @@ def test_build_status_dict_structure():
 
 def test_build_status_lod_ready_update():
     """lod_ready updates progressively."""
-    from panoconfig360_backend.api.server import BUILD_STATUS, BUILD_STATUS_LOCK
+    from api.server import BUILD_STATUS, BUILD_STATUS_LOCK
 
     build_id = "cd0000000000"
     with BUILD_STATUS_LOCK:
@@ -53,7 +53,7 @@ def test_build_status_lod_ready_update():
 
 def test_build_status_thread_safety():
     """BUILD_STATUS is safe for concurrent access."""
-    from panoconfig360_backend.api.server import BUILD_STATUS, BUILD_STATUS_LOCK
+    from api.server import BUILD_STATUS, BUILD_STATUS_LOCK
 
     build_id = "ef0000000000"
     with BUILD_STATUS_LOCK:

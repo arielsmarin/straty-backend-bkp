@@ -28,7 +28,7 @@ class _FakeS3Client:
 
 def test_load_client_config_not_found_in_r2(monkeypatch):
     """Missing config in R2 should raise ValueError."""
-    from panoconfig360_backend.api import server
+    from api import server
 
     key = "clients/testclient/testclient_cfg.json"
     monkeypatch.setattr(
@@ -43,7 +43,7 @@ def test_load_client_config_not_found_in_r2(monkeypatch):
 
 def test_load_client_config_invalid_json(monkeypatch):
     """Invalid JSON in config should raise ValueError."""
-    from panoconfig360_backend.api import server
+    from api import server
 
     key = "clients/testclient/testclient_cfg.json"
     monkeypatch.setattr(
@@ -58,7 +58,7 @@ def test_load_client_config_invalid_json(monkeypatch):
 
 def test_load_client_config_no_scenes(monkeypatch):
     """Config with empty scenes should return default scene."""
-    from panoconfig360_backend.api import server
+    from api import server
 
     key = "clients/testclient/testclient_cfg.json"
     payload = json.dumps({"scenes": {}, "layers": []}).encode("utf-8")
@@ -75,7 +75,7 @@ def test_load_client_config_no_scenes(monkeypatch):
 
 def test_load_client_config_valid(monkeypatch):
     """Valid config should load successfully from R2."""
-    from panoconfig360_backend.api import server
+    from api import server
 
     key = "clients/testclient/testclient_cfg.json"
     cfg = {
@@ -107,7 +107,7 @@ def test_load_client_config_valid(monkeypatch):
 
 def test_load_client_config_path_traversal():
     """Path traversal in client_id should raise HTTPException 400."""
-    from panoconfig360_backend.api import server
+    from api import server
 
     with pytest.raises(HTTPException) as exc_info:
         server.load_client_config("../../../etc/passwd")

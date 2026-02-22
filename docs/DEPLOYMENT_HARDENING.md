@@ -8,7 +8,7 @@ This guide covers security, reliability, and operational best practices for runn
 
 ### 1.1 Install SlowAPI (Token Bucket Rate Limiter)
 
-Add to `panoconfig360_backend/requirements.txt`:
+Add to `requirements.txt`:
 ```txt
 slowapi>=0.1.9
 redis>=4.5.0  # Optional: for distributed rate limiting
@@ -16,7 +16,7 @@ redis>=4.5.0  # Optional: for distributed rate limiting
 
 ### 1.2 Configure Rate Limiting
 
-Update `panoconfig360_backend/api/server.py`:
+Update `api/server.py`:
 
 ```python
 import os
@@ -118,7 +118,7 @@ async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
 
 In Render start command:
 ```bash
-uvicorn panoconfig360_backend.api.server:app \
+uvicorn api.server:app \
   --host 0.0.0.0 \
   --port $PORT \
   --workers 2 \
@@ -169,7 +169,7 @@ Install dependencies:
 pip install python-jose[cryptography] passlib[bcrypt]
 ```
 
-Create `panoconfig360_backend/auth/jwt.py`:
+Create `auth/jwt.py`:
 
 ```python
 import os
@@ -210,7 +210,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Security(security))
         )
 
 # Use in endpoints
-from panoconfig360_backend.auth.jwt import verify_token
+from auth.jwt import verify_token
 
 @app.post("/api/render")
 async def render_panorama(
@@ -440,7 +440,7 @@ async def health_check():
     
     # Check R2 connection
     try:
-        from panoconfig360_backend.storage.factory import exists
+        from storage.factory import exists
         exists("health-check.txt")
         health["storage"] = "healthy"
     except Exception as e:

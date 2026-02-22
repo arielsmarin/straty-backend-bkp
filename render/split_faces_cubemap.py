@@ -11,7 +11,7 @@ from typing import Callable, Optional
 
 import pyvips
 
-from panoconfig360_backend.render.vips_compat import VipsImageCompat, ensure_rgb8
+from render.vips_compat import VipsImageCompat, ensure_rgb8
 
 STRIP_FACES = ["px", "nx", "py", "ny", "pz", "nz"]
 logger = logging.getLogger(__name__)

@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 
 
 def test_render_cache_miss_returns_202(monkeypatch):
-    from panoconfig360_backend.api import server
+    from api import server
 
     monkeypatch.setattr(server, "load_client_config", lambda client_id: ({"scenes": {"scene": {}}}, {}))
     monkeypatch.setattr(
@@ -28,7 +28,7 @@ def test_render_cache_miss_returns_202(monkeypatch):
 
 
 def test_status_returns_processing_when_metadata_missing(monkeypatch):
-    from panoconfig360_backend.api import server
+    from api import server
 
     def _raise_not_found(key):
         raise FileNotFoundError(key)
@@ -43,7 +43,7 @@ def test_status_returns_processing_when_metadata_missing(monkeypatch):
 
 
 def test_status_returns_done_when_metadata_ready(monkeypatch):
-    from panoconfig360_backend.api import server
+    from api import server
 
     monkeypatch.setattr(server, "get_json", lambda key: {"status": "ready"})
 
@@ -56,7 +56,7 @@ def test_status_returns_done_when_metadata_ready(monkeypatch):
 
 
 def test_status_returns_idle_for_invalid_build():
-    from panoconfig360_backend.api import server
+    from api import server
 
     client = TestClient(server.app)
     response = client.get("/api/status/invalid-build?client=client1&scene=scene1")
@@ -66,7 +66,7 @@ def test_status_returns_idle_for_invalid_build():
 
 
 def test_status_returns_upload_progress(monkeypatch):
-    from panoconfig360_backend.api import server
+    from api import server
 
     def _raise_not_found(key):
         raise FileNotFoundError(key)
@@ -99,7 +99,7 @@ def test_status_returns_upload_progress(monkeypatch):
 
 
 def test_status_returns_extended_progress_fields(monkeypatch):
-    from panoconfig360_backend.api import server
+    from api import server
 
     def _raise_not_found(key):
         raise FileNotFoundError(key)

@@ -1,7 +1,7 @@
 import pytest
 from fastapi import HTTPException
 
-from panoconfig360_backend.utils.build_validation import (
+from utils.build_validation import (
     validate_build_string,
     validate_safe_id,
 )

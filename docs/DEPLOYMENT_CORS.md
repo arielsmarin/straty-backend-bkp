@@ -26,7 +26,7 @@ Already included in FastAPI. Ensure `fastapi` is in requirements.txt.
 
 ### 1.2 Configure CORS in Backend
 
-Update `panoconfig360_backend/api/server.py`:
+Update `api/server.py`:
 
 ```python
 import os

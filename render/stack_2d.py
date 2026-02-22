@@ -2,7 +2,7 @@ import os
 
 import pyvips
 
-from panoconfig360_backend.render.vips_compat import ensure_rgb8, load_rgb_image, resize_to_match
+from render.vips_compat import ensure_rgb8, load_rgb_image, resize_to_match
 
 
 def render_stack_2d(base_image_path, layers, output_path):

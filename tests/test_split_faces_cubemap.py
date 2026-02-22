@@ -7,7 +7,7 @@ import types
 def test_resize_face_for_lod_uses_linear_kernel(monkeypatch):
     monkeypatch.setitem(sys.modules, "pyvips", types.SimpleNamespace(Image=object))
 
-    from panoconfig360_backend.render import split_faces_cubemap
+    from render import split_faces_cubemap
 
     importlib.reload(split_faces_cubemap)
 
@@ -35,7 +35,7 @@ def test_configure_pyvips_concurrency_sets_env_default(monkeypatch):
     original = os.environ.get("VIPS_CONCURRENCY")
     monkeypatch.delenv("VIPS_CONCURRENCY", raising=False)
 
-    from panoconfig360_backend.render import split_faces_cubemap
+    from render import split_faces_cubemap
 
     importlib.reload(split_faces_cubemap)
     try:
@@ -52,7 +52,7 @@ def test_configure_pyvips_concurrency_keeps_existing_env(monkeypatch):
     monkeypatch.setitem(sys.modules, "pyvips", types.SimpleNamespace(Image=object, __version__="3.1.1"))
     monkeypatch.setenv("VIPS_CONCURRENCY", "2")
 
-    from panoconfig360_backend.render import split_faces_cubemap
+    from render import split_faces_cubemap
 
     importlib.reload(split_faces_cubemap)
     split_faces_cubemap.configure_pyvips_concurrency(0)
@@ -63,7 +63,7 @@ def test_configure_pyvips_concurrency_keeps_existing_env(monkeypatch):
 def test_process_cubemap_to_memory_reuses_split_and_resizes_once_per_face(monkeypatch):
     monkeypatch.setitem(sys.modules, "pyvips", types.SimpleNamespace(Image=object))
 
-    from panoconfig360_backend.render import split_faces_cubemap
+    from render import split_faces_cubemap
 
     importlib.reload(split_faces_cubemap)
     monkeypatch.setattr(split_faces_cubemap, "ensure_rgb8", lambda img: img)

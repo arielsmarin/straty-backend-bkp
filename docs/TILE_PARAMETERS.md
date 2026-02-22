@@ -257,7 +257,7 @@ Isso significa:
   - Linhas 50-61: Criação de URL source com `?v=` e configurações
   - Linhas 71-126: Polling de eventos e atualização
 
-- **Backend**: `panoconfig360_backend/api/server.py`
+- **Backend**: `api/server.py`
   - Linhas 76-91: Writer de eventos de estado de tiles
   - Linhas 212-418: Endpoint `/api/render` (2 fases)
   - Linhas 421-453: Endpoint `/api/render/events`

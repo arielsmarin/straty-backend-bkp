@@ -10,17 +10,17 @@ from collections import OrderedDict
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, Body, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from panoconfig360_backend.render.dynamic_stack import (
+from render.dynamic_stack import (
     _validate_config,
     build_string_from_selection,
 )
-from panoconfig360_backend.render.split_faces_cubemap import (
+from render.split_faces_cubemap import (
     process_cubemap,
     process_cubemap_to_memory,
     configure_pyvips_concurrency,
 )
-from panoconfig360_backend.models.render_2d import Render2DRequest
-from panoconfig360_backend.storage.factory import (
+from models.render_2d import Render2DRequest
+from storage.factory import (
     append_jsonl,
     exists,
     get_json,
@@ -29,12 +29,12 @@ from panoconfig360_backend.storage.factory import (
     get_public_url,
     upload_tiles_parallel,
 )
-from panoconfig360_backend.storage.tile_upload_queue import TileUploadQueue
-from panoconfig360_backend.render.scene_context import resolve_scene_context
+from storage.tile_upload_queue import TileUploadQueue
+from render.scene_context import resolve_scene_context
 from fastapi.responses import FileResponse, JSONResponse
 from pathlib import Path
-from panoconfig360_backend.utils.build_validation import validate_build_string, validate_safe_id
-from panoconfig360_backend.storage import storage_r2
+from utils.build_validation import validate_build_string, validate_safe_id
+from storage import storage_r2
 from botocore.exceptions import ClientError
 import re
 
@@ -54,9 +54,9 @@ TILE_ROOT_RE = re.compile(
 USE_MASK_STACK = True
 
 if USE_MASK_STACK:
-    from panoconfig360_backend.render.dynamic_stack_with_masks import stack_layers_image_only
+    from render.dynamic_stack_with_masks import stack_layers_image_only
 else:
-    from panoconfig360_backend.render.dynamic_stack import stack_layers_image_only
+    from render.dynamic_stack import stack_layers_image_only
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

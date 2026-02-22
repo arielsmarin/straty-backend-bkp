@@ -199,7 +199,7 @@ aws s3api put-bucket-policy \
 
 ### 5.1 Create R2 Storage Adapter
 
-Create `panoconfig360_backend/storage/storage_r2.py`:
+Create `storage/storage_r2.py`:
 
 ```python
 """
@@ -376,7 +376,7 @@ def get_public_url(key: str) -> str:
 
 ### 5.2 Update Storage Factory
 
-Create `panoconfig360_backend/storage/factory.py`:
+Create `storage/factory.py`:
 
 ```python
 """
@@ -388,7 +388,7 @@ import os
 STORAGE_BACKEND = os.getenv("STORAGE_BACKEND", "local")
 
 if STORAGE_BACKEND == "r2":
-    from panoconfig360_backend.storage.storage_r2 import (
+    from storage.storage_r2 import (
         exists,
         upload_file,
         download_file,
@@ -398,7 +398,7 @@ if STORAGE_BACKEND == "r2":
         get_public_url,
     )
 else:
-    from panoconfig360_backend.storage.storage_local import (
+    from storage.storage_local import (
         exists,
         upload_file,
         download_file,
@@ -424,14 +424,14 @@ __all__ = [
 
 ### 5.3 Update Server to Use Factory
 
-In `panoconfig360_backend/api/server.py`, change imports:
+In `api/server.py`, change imports:
 
 ```python
 # OLD:
-# from panoconfig360_backend.storage.storage_local import (...)
+# from storage.storage_local import (...)
 
 # NEW:
-from panoconfig360_backend.storage.factory import (
+from storage.factory import (
     exists,
     upload_file,
     get_json,
@@ -504,7 +504,7 @@ export R2_PUBLIC_URL=https://cdn.example.com
 
 # Test upload
 python3 << EOF
-from panoconfig360_backend.storage.factory import upload_file, exists, get_public_url
+from storage.factory import upload_file, exists, get_public_url
 import tempfile
 
 # Create test file

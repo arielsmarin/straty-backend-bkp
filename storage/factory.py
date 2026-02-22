@@ -14,7 +14,7 @@ logging.info(f"📂 Storage backend: {STORAGE_BACKEND}")
 
 if STORAGE_BACKEND == "r2":
     try:
-        from panoconfig360_backend.storage.storage_r2 import (
+        from storage.storage_r2 import (
             exists,
             upload_file,
             download_file,
@@ -28,7 +28,7 @@ if STORAGE_BACKEND == "r2":
     except Exception as e:
         logging.error(f"❌ Failed to initialize R2 storage: {e}")
         logging.info("📂 Falling back to local storage")
-        from panoconfig360_backend.storage.storage_local import (
+        from storage.storage_local import (
             exists,
             upload_file,
             download_file,
@@ -42,7 +42,7 @@ if STORAGE_BACKEND == "r2":
             """Local storage returns relative URLs."""
             return f"/panoconfig360_cache/{key}"
 else:
-    from panoconfig360_backend.storage.storage_local import (
+    from storage.storage_local import (
         exists,
         upload_file,
         download_file,

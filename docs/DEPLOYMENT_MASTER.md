@@ -69,11 +69,11 @@ nano .env
 
 ```bash
 # Install dependencies
-cd panoconfig360_backend
+cd 
 pip install -r requirements.txt
 
 # Run backend
-uvicorn panoconfig360_backend.api.server:app --reload
+uvicorn api.server:app --reload
 
 # Test in browser
 # http://localhost:8000/docs
@@ -121,7 +121,7 @@ export R2_SECRET_ACCESS_KEY=your_secret
 
 # Test upload (Python)
 python3 << EOF
-from panoconfig360_backend.storage.storage_r2 import upload_file, exists
+from storage.storage_r2 import upload_file, exists
 import tempfile
 
 with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
@@ -153,8 +153,8 @@ git push origin main
 
 **Or manually configure**:
 - Name: `panoconfig360-api`
-- Build Command: `pip install -r panoconfig360_backend/requirements.txt`
-- Start Command: `uvicorn panoconfig360_backend.api.server:app --host 0.0.0.0 --port $PORT --workers 2`
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `uvicorn api.server:app --host 0.0.0.0 --port $PORT --workers 2`
 - Plan: Starter ($7/month recommended)
 
 #### 3.3 Configure Environment Variables

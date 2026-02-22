@@ -14,7 +14,7 @@ Este projeto implementa um configurador interativo de ambientes 360° que permit
 ## Arquitetura
 
 ### Backend (Python/FastAPI)
-- **`panoconfig360_backend/`**: API de renderização e gerenciamento de tiles
+- **``**: API de renderização e gerenciamento de tiles
   - Renderização em 2 fases (LOD baixo + LOD alto em background)
   - Sistema de eventos para notificação de tiles prontos
   - Cache local de tiles gerados
@@ -88,7 +88,7 @@ panoconfig360_totem/
 ├── docs/                           # Documentação técnica
 │   ├── TILE_PARAMETERS.md          # Explicação do sistema ?v=
 │   └── TILE_FADE_TRANSITION.md     # Sistema de transição LOD
-├── panoconfig360_backend/          # API Backend (FastAPI)
+├──           # API Backend (FastAPI)
 │   ├── api/
 │   │   └── server.py              # Endpoints principais
 │   ├── render/
@@ -120,11 +120,11 @@ panoconfig360_totem/
 ### Backend
 
 ```bash
-cd panoconfig360_backend
+cd 
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn panoconfig360_backend.api.server:app --reload --host 0.0.0.0 --port 8000
+uvicorn api.server:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Frontend
@@ -249,7 +249,7 @@ panoconfig360_cache/
 Cada combinação única de materiais gera uma build string determinística em base36:
 
 ```python
-# Algoritmo em panoconfig360_backend/render/dynamic_stack.py
+# Algoritmo em render/dynamic_stack.py
 # Função: build_string_from_selection() (aproximadamente linhas 101-129)
 
 # Formato: [scene_index:2][layer0:2][layer1:2][layer2:2][layer3:2][layer4:2]
@@ -299,7 +299,7 @@ git commit -m "docs: atualiza documentação de tiles"
 
 ```bash
 # Backend
-cd panoconfig360_backend
+cd 
 pytest
 
 # CRUD App

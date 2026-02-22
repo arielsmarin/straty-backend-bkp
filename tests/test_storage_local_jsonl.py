@@ -1,8 +1,8 @@
-from panoconfig360_backend.storage.storage_local import append_jsonl, read_jsonl_slice
+from storage.storage_local import append_jsonl, read_jsonl_slice
 
 
 def test_append_and_read_jsonl_slice(tmp_path, monkeypatch):
-    from panoconfig360_backend.storage import storage_local
+    from storage import storage_local
 
     monkeypatch.setattr(storage_local, "ASSETS_ROOT", tmp_path)
 

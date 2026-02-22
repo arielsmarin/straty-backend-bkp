@@ -8,7 +8,7 @@ import types
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from panoconfig360_backend.storage.tile_upload_queue import TileUploadQueue
+from storage.tile_upload_queue import TileUploadQueue
 
 
 def test_tile_upload_queue_multiple_workers(tmp_path: Path):
@@ -85,7 +85,7 @@ def test_process_cubemap_to_memory_processes_faces_in_parallel(monkeypatch):
     """process_cubemap_to_memory should process the 6 cubemap faces concurrently."""
     monkeypatch.setitem(sys.modules, "pyvips", types.SimpleNamespace(Image=object))
 
-    from panoconfig360_backend.render import split_faces_cubemap
+    from render import split_faces_cubemap
 
     importlib.reload(split_faces_cubemap)
     monkeypatch.setattr(split_faces_cubemap, "ensure_rgb8", lambda img: img)

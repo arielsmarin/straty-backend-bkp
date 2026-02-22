@@ -2,11 +2,11 @@ import os
 import json
 import logging
 from pathlib import Path
-from panoconfig360_backend.render.vips_compat import resolve_asset, construct_r2_url
+from render.vips_compat import resolve_asset, construct_r2_url
 
 import pyvips
 
-from panoconfig360_backend.render.vips_compat import (
+from render.vips_compat import (
     VipsImageCompat,
     blend_with_mask,
     ensure_rgb8,

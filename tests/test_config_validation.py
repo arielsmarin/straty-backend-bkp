@@ -11,7 +11,7 @@ def load_config(monkeypatch):
     monkeypatch.setitem(
         sys.modules, "pyvips", types.SimpleNamespace(Image=object)
     )
-    from panoconfig360_backend.render import dynamic_stack
+    from render import dynamic_stack
 
     importlib.reload(dynamic_stack)
     return dynamic_stack.load_config

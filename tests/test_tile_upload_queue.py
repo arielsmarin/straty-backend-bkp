@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from panoconfig360_backend.storage.tile_upload_queue import TileUploadQueue
+from storage.tile_upload_queue import TileUploadQueue
 
 
 def test_tile_upload_queue_tracks_states_and_uploads(tmp_path: Path):

@@ -84,8 +84,8 @@ static LOD_FADE_INITIAL_SATURATION = 0.15;  // Initial grayscale amount (0-1)
 
 1. **Start the backend**:
 ```bash
-cd panoconfig360_backend
-uvicorn panoconfig360_backend.api.server:app --reload --port 8000
+cd 
+uvicorn api.server:app --reload --port 8000
 ```
 
 2. **Open the frontend**:

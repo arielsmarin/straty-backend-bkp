@@ -24,8 +24,8 @@ services:
     region: oregon  # or frankfurt, singapore (choose closest to users)
     plan: starter  # or free, standard depending on needs
     branch: main
-    buildCommand: pip install --upgrade pip && pip install -r panoconfig360_backend/requirements.txt
-    startCommand: uvicorn panoconfig360_backend.api.server:app --host 0.0.0.0 --port $PORT --workers 2
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn api.server:app --host 0.0.0.0 --port $PORT --workers 2
     healthCheckPath: /health
     envVars:
       # Environment mode
@@ -79,7 +79,7 @@ services:
 
 ### 1.2 Update `requirements.txt`
 
-Ensure all production dependencies are listed in `panoconfig360_backend/requirements.txt`:
+Ensure all production dependencies are listed in `requirements.txt`:
 
 ```txt
 fastapi>=0.104.0
@@ -96,7 +96,7 @@ slowapi>=0.1.9  # Rate limiting
 
 ### 1.3 Create Health Check Endpoint
 
-Add to `panoconfig360_backend/api/server.py`:
+Add to `api/server.py`:
 
 ```python
 @app.get("/health")
@@ -115,7 +115,7 @@ async def health_check():
 
 ### 1.4 Add Runtime Specification (Optional)
 
-Create `panoconfig360_backend/runtime.txt` if you need a specific Python version:
+Create `runtime.txt` if you need a specific Python version:
 
 ```txt
 python-3.11.6
@@ -139,11 +139,11 @@ python-3.11.6
 **Runtime**: `Python 3`
 **Build Command**:
 ```bash
-pip install --upgrade pip && pip install -r panoconfig360_backend/requirements.txt
+pip install --upgrade pip && pip install -r requirements.txt
 ```
 **Start Command**:
 ```bash
-uvicorn panoconfig360_backend.api.server:app --host 0.0.0.0 --port $PORT --workers 2
+uvicorn api.server:app --host 0.0.0.0 --port $PORT --workers 2
 ```
 
 ### 2.3 Configure Instance
@@ -289,7 +289,7 @@ Render auto-scales based on:
 
 ### 7.1 Add Build Script
 
-Create `panoconfig360_backend/build.sh`:
+Create `build.sh`:
 
 ```bash
 #!/bin/bash
@@ -303,21 +303,21 @@ apt-get install -y libvips-dev libvips-tools
 
 echo "Installing Python dependencies..."
 pip install --upgrade pip
-pip install -r panoconfig360_backend/requirements.txt
+pip install -r requirements.txt
 
 echo "Build complete!"
 ```
 
 Make it executable:
 ```bash
-chmod +x panoconfig360_backend/build.sh
+chmod +x build.sh
 ```
 
 ### 7.2 Update Build Command
 
 In Render dashboard, update **Build Command**:
 ```bash
-bash panoconfig360_backend/build.sh
+bash build.sh
 ```
 
 ## Step 8: Deploy and Verify
@@ -462,7 +462,7 @@ app.add_middleware(RequestSizeLimitMiddleware, max_size=10 * 1024 * 1024)
 **Solution**: Add system dependencies in `build.sh` (see Step 7)
 
 **Issue**: `requirements.txt not found`
-**Solution**: Verify path is `panoconfig360_backend/requirements.txt`
+**Solution**: Verify path is `requirements.txt`
 
 ### Service Crashes
 

@@ -87,8 +87,8 @@ To fully test this feature, you need to:
 
 1. Start the backend:
 ```bash
-cd panoconfig360_backend
-uvicorn panoconfig360_backend.api.server:app --reload --port 8000
+cd 
+uvicorn api.server:app --reload --port 8000
 ```
 
 2. Open browser to: `http://localhost:8000`
