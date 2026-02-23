@@ -21,7 +21,7 @@ R2_ENDPOINT_URL = os.getenv(
     "R2_ENDPOINT_URL",
     f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com" if R2_ACCOUNT_ID else None
 )
-R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "https://cdn.example.com")
+R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "https://pub-4503b4acd02140cfb69ab3886530d45b.r2.dev")
 
 logging.info(f"📦 Using R2 bucket: {R2_BUCKET_NAME}")
 logging.info(f"🌐 R2 public URL: {R2_PUBLIC_URL}")
@@ -113,7 +113,7 @@ def upload_tiles_parallel(
     if not s3_client:
         raise RuntimeError("R2 client not initialized")
 
-    max_workers = max(1, max_workers)
+    max_workers = min(4, max(1, max_workers))
     active_uploads = 0
     max_active_uploads = 0
     active_lock = threading.Lock()

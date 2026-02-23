@@ -130,3 +130,43 @@ def test_status_returns_extended_progress_fields(monkeypatch):
     finally:
         with server.BUILD_LOCK:
             server.BUILD_STATUS.pop("ab0000000000", None)
+
+
+def test_render_lod0_upload_uses_max_4_workers(monkeypatch):
+    import importlib
+    import sys
+    import types
+    sys.modules["pyvips"] = types.SimpleNamespace(Image=object, __version__="mock")
+    from api import server
+    server = importlib.reload(server)
+
+    captured = {}
+
+    monkeypatch.setattr(server, "load_client_config", lambda client_id: ({"scenes": {"scene": {}}}, {}))
+    monkeypatch.setattr(
+        server,
+        "resolve_scene_context",
+        lambda project, scene_id: {"layers": [], "assets_root": "", "scene_index": 0},
+    )
+    monkeypatch.setattr(server, "build_string_from_selection", lambda *args, **kwargs: "ab12cd34")
+    monkeypatch.setattr(server, "exists", lambda key: False)
+    monkeypatch.setattr(server, "_render_build_background", lambda *args, **kwargs: None)
+    monkeypatch.setattr(server, "stack_layers_image_only", lambda **kwargs: object())
+    monkeypatch.setattr(server, "process_cubemap_to_memory", lambda *args, **kwargs: [("ab12cd34_f_0_0_0.jpg", b"jpg", 0)])
+
+    def _fake_upload(tiles, content_type="image/jpeg", max_workers=25, on_tile_uploaded=None):
+        captured["max_workers"] = max_workers
+        for tile_key, _ in tiles:
+            if on_tile_uploaded is not None:
+                on_tile_uploaded(tile_key)
+
+    monkeypatch.setattr(server, "upload_tiles_parallel", _fake_upload)
+
+    client = TestClient(server.app)
+    response = client.post(
+        "/api/render",
+        json={"client": "client1", "scene": "scene1", "selection": {"a": 1}},
+    )
+
+    assert response.status_code == 202
+    assert captured["max_workers"] == 4

@@ -9,4 +9,6 @@ __pycache__/
 venv
 env
 .env
-panoconfig360_cache/
+gunicorn.log
+panoconfig360_cache/*
+

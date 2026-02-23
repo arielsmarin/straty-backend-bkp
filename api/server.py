@@ -6,6 +6,7 @@ import shutil
 import time
 import tempfile
 import threading
+import gc
 from collections import OrderedDict
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, Body, BackgroundTasks
@@ -44,7 +45,8 @@ logger = logging.getLogger(__name__)
 # CONFIGURAÇÕES GLOBAIS
 ROOT_DIR = Path(__file__).resolve().parents[1].parent
 CLIENTS_ROOT = Path("panoconfig360_cache/clients")
-LOCAL_CACHE_DIR = ROOT_DIR / "panoconfig360_cache"
+TEMP_PROCESSING_DIR = Path("/tmp/panoconfig360")
+LOCAL_CACHE_DIR = TEMP_PROCESSING_DIR
 os.makedirs(LOCAL_CACHE_DIR, exist_ok=True)
 CLIENT_CONFIG_BUCKET = os.getenv("R2_CONFIG_BUCKET", "panoconfig360")
 TILE_RE = re.compile(r"^[0-9a-z]+_[fblrud]_\d+_\d+_\d+\.jpg$")
@@ -209,13 +211,15 @@ def _render_build_background(
             progress=0.0,
             error=None,
         )
+        logging.info("UPLOAD START: Uploading %s tiles to R2", tiles_total)
         upload_start = time.monotonic()
         upload_tiles_parallel(
             tiles,
-            max_workers=25,
+            max_workers=4,
             on_tile_uploaded=lambda _: _increment_build_tiles_uploaded(build_str),
         )
         upload_elapsed = time.monotonic() - upload_start
+        logging.info("UPLOAD COMPLETE: Uploaded %s tiles to R2", tiles_total)
         logging.info("⏱️ Tempo upload total (%s): %.2fs",
                      render_key, upload_elapsed)
 
@@ -258,6 +262,8 @@ def _render_build_background(
         _set_build_status(build_str, "error", error=str(
             exc), failed_at=int(time.time()))
     finally:
+        gc.collect()
+        logging.info("TEMP CLEANUP: Cleared temporary render buffers")
         total_elapsed = time.monotonic() - total_start
         logging.info("⏱️ Tempo total pipeline (%s): %.2fs",
                      render_key, total_elapsed)
@@ -285,7 +291,8 @@ def _render_remaining_lods(
             project, _ = load_client_config(client_id)
             ctx = resolve_scene_context(project, scene_id)
 
-        tmp_dir = tempfile.mkdtemp(prefix=f"{build_str}_bg_")
+        os.makedirs(TEMP_PROCESSING_DIR, exist_ok=True)
+        tmp_dir = tempfile.mkdtemp(prefix=f"{build_str}_bg_", dir=str(TEMP_PROCESSING_DIR))
         uploader = None
         try:
             uploader = TileUploadQueue(
@@ -295,6 +302,7 @@ def _render_remaining_lods(
                 on_state_change=_tile_state_event_writer(tile_root, build_str),
             )
             uploader.start()
+            logging.info("UPLOAD START: Background upload queue for %s", render_key)
 
             stack_img = stack_layers_image_only(
                 scene_id=scene_id,
@@ -314,6 +322,7 @@ def _render_remaining_lods(
             del stack_img
             uploader.close_and_wait()
             uploaded_count = uploader.uploaded_count
+            logging.info("UPLOAD COMPLETE: Background uploaded %s tiles", uploaded_count)
             metadata_payload = {
                 "client": client_id,
                 "scene": scene_id,
@@ -346,6 +355,8 @@ def _render_remaining_lods(
                     logging.exception(
                         "❌ Erro ao encerrar fila de upload em background (%s)", render_key)
             shutil.rmtree(tmp_dir, ignore_errors=True)
+            gc.collect()
+            logging.info("TEMP CLEANUP: Temporary files removed")
     except Exception:
         logging.exception(
             "❌ Falha na geração de LODs em background para %s", render_key)
@@ -423,7 +434,9 @@ def load_client_config(client_id: str):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.info("🚀 Iniciando backend STRATY")
-    os.makedirs(LOCAL_CACHE_DIR, exist_ok=True)
+    shutil.rmtree(TEMP_PROCESSING_DIR, ignore_errors=True)
+    os.makedirs(TEMP_PROCESSING_DIR, exist_ok=True)
+    logging.info("TEMP CLEANUP: Temporary files removed")
     # Must run at startup so libvips reads VIPS_CONCURRENCY before render operations.
     configure_pyvips_concurrency()
     yield
@@ -638,7 +651,7 @@ def render_cubemap(
                         )
                         upload_tiles_parallel(
                             lod0_tiles,
-                            max_workers=8,
+                            max_workers=4,
                             on_tile_uploaded=lambda _: _increment_build_tiles_uploaded(build_str),
                         )
                         _set_build_status(
